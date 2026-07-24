@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Host: auditprolab.ru
+Sitemap: https://auditprolab.ru/sitemap.xml
