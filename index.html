@@ -1931,7 +1931,17 @@ leadForm?.addEventListener("submit", (event) => {
     leadFormStatus.textContent = "Заявка заполнена. Сейчас откроется Telegram — останется отправить сообщение.";
   }
 
+  if (typeof window.ym === "function") {
+    window.ym(111017243, "reachGoal", "application_submit");
+  }
+
   window.open(`https://t.me/olga_sales?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+});
+
+document.querySelector(".lead-form__telegram a")?.addEventListener("click", () => {
+  if (typeof window.ym === "function") {
+    window.ym(111017243, "reachGoal", "telegram_click");
+  }
 });
 </script></body>
 </html>
