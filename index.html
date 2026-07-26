@@ -1925,32 +1925,70 @@ document.addEventListener("keydown", (event) => {
 const leadForm = document.querySelector("#application");
 const leadFormStatus = leadForm?.querySelector(".lead-form__status");
 
-leadForm?.addEventListener("submit", (event) => {
+leadForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   if (!leadForm.reportValidity()) return;
 
   const data = new FormData(leadForm);
-  const message = [
-    "Здравствуйте! Хочу записаться на онлайн-встречу.",
-    "",
-    `Имя и фамилия: ${data.get("name")}`,
-    `Компания: ${data.get("company")}`,
-    `Должность: ${data.get("position")}`,
-    `Сфера бизнеса: ${data.get("industry")}`,
-    `Телефон: ${data.get("phone")}`,
-    `Telegram: ${data.get("telegram") || "не указан"}`,
-  ].join("\n");
+  const submitButton = leadForm.querySelector(".lead-form__submit");
+  const initialButtonContent = submitButton?.innerHTML;
+  const query = new URLSearchParams(window.location.search);
+  const utm = [...query.entries()]
+    .filter(([key]) => key.toLowerCase().startsWith("utm_"))
+    .map(([key, value]) => `${key}=${value}`)
+    .join("&");
 
   if (leadFormStatus) {
-    leadFormStatus.textContent = "Заявка заполнена. Сейчас откроется Telegram — останется отправить сообщение.";
+    leadFormStatus.textContent = "Отправляем заявку…";
   }
 
-  if (typeof window.ym === "function") {
-    window.ym(111017243, "reachGoal", "application_submit");
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = "Отправляем…";
   }
 
-  window.open(`https://t.me/olga_auditpro?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+  try {
+    const response = await fetch("https://auditprolab-crm.olgaspektorr.workers.dev", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        name: data.get("name"),
+        company: data.get("company"),
+        position: data.get("position"),
+        industry: data.get("industry"),
+        phone: data.get("phone"),
+        telegram: data.get("telegram"),
+        website: data.get("website"),
+        consent: data.get("consent") === "on",
+        page: window.location.href,
+        utm,
+      }),
+    });
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok || result.ok !== true) {
+      throw new Error(result.error || `HTTP ${response.status}`);
+    }
+
+    leadForm.reset();
+    if (leadFormStatus) {
+      leadFormStatus.textContent = "Спасибо! Заявка отправлена. Я свяжусь с вами, чтобы согласовать время встречи.";
+    }
+    if (typeof window.ym === "function") {
+      window.ym(111017243, "reachGoal", "application_submit");
+    }
+  } catch (error) {
+    console.error("Lead form submission failed", error);
+    if (leadFormStatus) {
+      leadFormStatus.textContent = "Не удалось отправить заявку. Попробуйте ещё раз или напишите мне в Telegram.";
+    }
+  } finally {
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.innerHTML = initialButtonContent;
+    }
+  }
 });
 
 document.querySelector(".lead-form__telegram a")?.addEventListener("click", () => {
