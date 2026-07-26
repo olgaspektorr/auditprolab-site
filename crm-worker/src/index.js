@@ -43,7 +43,16 @@ export default {
     }
 
     if (request.method === "OPTIONS") {
-      return json({ ok: true }, 204, origin);
+      return new Response(null, {
+        status: 204,
+        headers: {
+          "access-control-allow-origin": origin,
+          "access-control-allow-methods": "POST, OPTIONS",
+          "access-control-allow-headers": "content-type",
+          "access-control-max-age": "86400",
+          "vary": "Origin",
+        },
+      });
     }
 
     if (request.method !== "POST") {
@@ -136,4 +145,3 @@ export default {
     }
   },
 };
-
