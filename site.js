@@ -23,6 +23,11 @@ document.querySelectorAll('a[href="/approach/"]').forEach(a=>a.addEventListener(
 document.querySelectorAll('a[href="/audit-otdela-prodazh/"]').forEach(a=>a.addEventListener("click",()=>window.ym?.(111017243,"reachGoal","audit_page_open")));
 
 const form=document.querySelector("#application"),status=form?.querySelector(".form__status");
+document.querySelectorAll(".format-button").forEach(button=>button.addEventListener("click",()=>{
+  const field=form?.querySelector('[name="selectedFormat"]');
+  if(field)field.value=button.dataset.format||"Обсуждение ситуации";
+  window.ym?.(111017243,"params",{selected_format:button.dataset.format||""});
+}));
 form?.addEventListener("focusin",()=>window.ym?.(111017243,"reachGoal","application_start"),{once:true});
 form?.addEventListener("submit",async event=>{
   event.preventDefault();
@@ -33,7 +38,7 @@ form?.addEventListener("submit",async event=>{
     name:data.get("name"),company:data.get("company"),position:data.get("position"),
     phone:isTelegram?"":contact,telegram:isTelegram?contact:"",
     contact,industry:data.get("industry"),site:data.get("site"),teamSize:data.get("teamSize"),
-    situation:data.get("situation"),website:data.get("website"),consent:data.get("consent")==="on",
+    situation:data.get("situation"),selectedFormat:data.get("selectedFormat"),website:data.get("website"),consent:data.get("consent")==="on",
     page:location.href,utm
   };
   button.disabled=true;status.textContent="Отправляю…";

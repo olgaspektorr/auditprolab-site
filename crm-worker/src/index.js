@@ -82,6 +82,7 @@ export default {
       site: clean(body.site, 300),
       teamSize: clean(body.teamSize, 80),
       situation: clean(body.situation, 1500),
+      selectedFormat: clean(body.selectedFormat, 200),
       page: clean(body.page, 300),
       utm: clean(body.utm, 500),
     };
@@ -115,6 +116,7 @@ export default {
             telegram ? `Telegram: ${telegram}` : "",
             lead.site ? `Сайт компании: ${lead.site}` : "",
             lead.teamSize ? `Размер команды: ${lead.teamSize}` : "",
+            lead.selectedFormat ? `Выбранный формат: ${lead.selectedFormat}` : "",
             "Источник: форма auditprolab.ru",
           ].filter(Boolean).join("\n"),
           SOURCE_ID: "WEB",
@@ -142,6 +144,7 @@ export default {
             telegram ? `Telegram: ${telegram}` : "",
             lead.site ? `Сайт компании: ${lead.site}` : "",
             lead.teamSize ? `Размер команды: ${lead.teamSize}` : "",
+            lead.selectedFormat ? `Выбранный формат: ${lead.selectedFormat}` : "",
             lead.situation ? `Ситуация: ${lead.situation}` : "",
             `Страница: ${lead.page || "https://auditprolab.ru/"}`,
             lead.utm ? `UTM: ${lead.utm}` : "",
