@@ -19,3 +19,12 @@
 .format-grid .price,.design-block .price{color:var(--orange)}
 .case>div:nth-child(2) span,.case>div:nth-child(4) span{color:#ff8a63}
 .form__head>span{color:#ff8a63}
+
+/* Large clean portrait in the homepage hero. */
+.hero__grid{grid-template-columns:1.04fr .96fr;gap:34px}
+.hero__photo{height:720px}
+.hero__photo:before{inset:5% 0 3%}
+.hero__photo img{width:112%;height:100%;margin-left:-6%;object-fit:contain;object-position:center bottom;filter:none;mask-image:none}
+.hero__photo figcaption{right:2%;bottom:20px}
+@media(max-width:820px){.hero__photo{height:590px}.hero__photo img{width:100%;margin-left:0}}
+@media(max-width:560px){.hero__photo{height:500px}}
