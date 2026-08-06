@@ -240,3 +240,6 @@
   .quote-grid p{font-size:19px}
   .telegram-button{width:100%;justify-content:center}
 }
+
+/* The brand is presented by its full name; the temporary OA monogram is not used. */
+.brand__mark{display:none!important}
