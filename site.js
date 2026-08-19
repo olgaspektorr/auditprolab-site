@@ -1,3 +1,13 @@
+const v2SitePaths=new Set(["/research/","/approach/"]);
+if(v2SitePaths.has(location.pathname)){
+  document.body.classList.add("theme-v2");
+  if(!document.querySelector('link[href="/theme-v2.css"]')){
+    const theme=document.createElement("link");
+    theme.rel="stylesheet";theme.href="/theme-v2.css";
+    document.head.appendChild(theme);
+  }
+}
+
 if(!window.ym){
   window.ym=function(){(window.ym.a=window.ym.a||[]).push(arguments)};
   window.ym.l=Date.now();
