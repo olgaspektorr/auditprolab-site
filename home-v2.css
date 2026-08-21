@@ -140,10 +140,9 @@ body.home-v2::after{right:22px}
   margin:0;
   object-fit:contain;
   object-position:center bottom;
-  filter:none;
   transform:none;
   image-rendering:auto;
-  filter:drop-shadow(0 18px 38px rgba(3,3,8,.22));
+  filter:brightness(.88) saturate(.92) drop-shadow(0 18px 38px rgba(3,3,8,.28));
   -webkit-mask-image:
     radial-gradient(ellipse 84% 88% at 50% 45%,#000 76%,transparent 100%),
     linear-gradient(to bottom,#000 0%,#000 76%,transparent 100%);
