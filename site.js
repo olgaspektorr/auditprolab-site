@@ -1,6 +1,6 @@
 const v2SitePaths=new Set(["/research/","/approach/"]);
 if(v2SitePaths.has(location.pathname)){
-  document.body.classList.add("theme-v2");
+  document.body.classList.add("theme-v2","about-light");
   if(!document.querySelector('link[href="/theme-v2.css"]')){
     const theme=document.createElement("link");
     theme.rel="stylesheet";theme.href="/theme-v2.css";

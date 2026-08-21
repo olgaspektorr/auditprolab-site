@@ -114,6 +114,7 @@ body.theme-v2{
 .theme-v2 .subhero h1 em{
   color:var(--gold-bright);
   font-family:var(--font-display);
+  font-style:normal;
   font-weight:600;
 }
 
@@ -341,6 +342,28 @@ body.theme-v2.about-light{
   color:var(--about-plum);
 }
 
+.about-light .side-card,
+.about-light .cards3 article,
+.about-light .prose details{
+  border-color:rgba(184,135,58,.24);
+  background:linear-gradient(145deg,rgba(255,255,255,.74),rgba(238,233,242,.82));
+  color:var(--about-ink);
+  box-shadow:0 18px 46px rgba(67,52,72,.09);
+}
+.about-light .side-card strong,
+.about-light .cards3 h3,
+.about-light .prose details summary,
+.about-light .prose strong{color:var(--about-ink)}
+.about-light .side-card p,
+.about-light .cards3 p,
+.about-light .prose details p,
+.about-light .fineprint{color:var(--about-muted)}
+.about-light .statement{
+  border-left-color:var(--about-gold);
+  background:rgba(74,41,68,.07);
+  color:var(--about-plum);
+}
+
 .about-light .about-profile__photo::before{
   display:none;
 }
@@ -368,3 +391,45 @@ body.theme-v2.about-light{
 }
 .about-light .footer nav a,
 .about-light .footer p{color:#655c67}
+
+/* Shared light treatment for the four primary inner sections. */
+.about-light .apl-header{
+  border-color:rgba(184,135,58,.24);
+  background:rgba(248,244,238,.92);
+  box-shadow:0 18px 55px rgba(67,52,72,.12);
+}
+.about-light .apl-nav a{color:#625966}
+.about-light .apl-nav a:hover,
+.about-light .apl-nav a[aria-current="page"]{color:var(--about-plum)}
+.about-light .apl-menu span{background:var(--about-ink)}
+
+.about-light .materials{
+  background:
+    radial-gradient(ellipse at 76% 14%,rgba(255,255,255,.9),transparent 42%),
+    linear-gradient(180deg,rgba(245,240,232,.72),rgba(232,227,239,.64));
+}
+.about-light .materials::after{
+  background:linear-gradient(90deg,transparent,var(--about-gold) 45%,#d1a85e 50%,var(--about-gold) 55%,transparent);
+  box-shadow:0 0 9px rgba(184,135,58,.2);
+}
+.about-light .materials h1{color:var(--about-ink)}
+.about-light .materials .eyebrow,
+.about-light .material-card small{color:var(--about-gold)}
+.about-light .materials>.wrap>p,
+.about-light .material-card p{color:var(--about-muted)}
+.about-light .material-card{
+  border-color:rgba(184,135,58,.24);
+  background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(238,233,242,.82));
+  box-shadow:0 18px 46px rgba(67,52,72,.1);
+}
+.about-light .material-card h2{color:var(--about-ink)}
+.about-light .material-card strong{color:var(--about-plum)}
+.about-light footer{
+  background:rgba(232,227,239,.86);
+  color:var(--about-ink);
+}
+.about-light footer::before{
+  background:linear-gradient(90deg,transparent,var(--about-gold) 45%,#d1a85e 50%,var(--about-gold) 55%,transparent);
+}
+.about-light footer a,
+.about-light footer p{color:#655c67}

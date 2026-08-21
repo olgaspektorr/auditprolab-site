@@ -7,6 +7,7 @@ const v2SharedPaths=new Set([
 ]);
 if(v2SharedPaths.has(location.pathname)){
   document.body.classList.add("theme-v2");
+  if(location.pathname==="/blog/") document.body.classList.add("about-light");
   if(!document.querySelector('link[href="/theme-v2.css"]')){
     const theme=document.createElement("link");
     theme.rel="stylesheet";theme.href="/theme-v2.css";
