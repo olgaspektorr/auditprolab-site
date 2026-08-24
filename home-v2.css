@@ -305,3 +305,46 @@ body.home-v2::after{right:22px}
   .home-v2 .hero h1{font-size:clamp(36px,10vw,42px);letter-spacing:-.055em}
   .home-v2 .mobile-cta{border:1px solid rgba(232,200,120,.45);background:linear-gradient(135deg,#623b8d,var(--purple-accent),var(--maroon-accent))}
 }
+
+/* 2026-08-24: keep the system-design offer readable on phones. */
+@media(max-width:820px){
+  body.home-v2 .design-block{
+    width:100%;
+    max-width:100%;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:28px;
+  }
+  body.home-v2 .design-block>div{
+    width:100%;
+    min-width:0;
+    max-width:100%;
+  }
+  body.home-v2 .design-block>div:last-child{
+    padding-top:24px;
+    border-top:1px solid rgba(212,175,106,.24);
+  }
+  body.home-v2 .design-block h3,
+  body.home-v2 .design-block p,
+  body.home-v2 .design-block li,
+  body.home-v2 .design-block b{
+    max-width:100%;
+    overflow-wrap:anywhere;
+  }
+  body.home-v2 .design-block .button{
+    box-sizing:border-box;
+    width:100%;
+    max-width:100%;
+    white-space:normal;
+    text-align:center;
+  }
+}
+@media(max-width:560px){
+  body.home-v2 .design-block{gap:22px}
+  body.home-v2 .design-block h3{
+    font-size:clamp(24px,7.2vw,28px);
+    line-height:1.18;
+  }
+  body.home-v2 .design-block .price{
+    font-size:clamp(27px,8vw,34px);
+  }
+}
