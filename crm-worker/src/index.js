@@ -1,44 +1,76 @@
-const json = (body, status, origin) =>
-  new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      "content-type": "application/json; charset=utf-8",
-      "access-control-allow-origin": origin,
-      "access-control-allow-methods": "POST, OPTIONS",
-      "access-control-allow-headers": "content-type",
-      vary: "Origin",
-      "x-content-type-options": "nosniff",
-    },
-  });
+const json = (body, status, origin) => new Response(JSON.stringify(body), {
+  status,
+  headers: {
+    "content-type": "application/json; charset=utf-8",
+    "access-control-allow-origin": origin,
+    "access-control-allow-methods": "POST, OPTIONS",
+    "access-control-allow-headers": "content-type",
+    "vary": "Origin",
+    "x-content-type-options": "nosniff"
+  }
+});
 
-const clean = (value, maxLength) =>
+const clean = (value, maxLength = 1000) =>
   String(value ?? "")
     .replace(/[\u0000-\u001f\u007f]/g, " ")
     .replace(/\s+/g, " ")
     .trim()
     .slice(0, maxLength);
 
-const callBitrix = async (webhook, method, params) => {
-  const response = await fetch(`${webhook.replace(/\/+$/, "")}/${method}.json`, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(params),
-  });
-  const payload = await response.json();
-  if (!response.ok || payload.error) {
-    throw new Error(payload.error_description || payload.error || `Bitrix HTTP ${response.status}`);
+const escapeHtml = (value) =>
+  clean(value, 4000)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+async function telegram(env, method, payload) {
+  if (!env.TELEGRAM_BOT_TOKEN) throw new Error("missing_bot_token");
+  const response = await fetch(
+    "https://api.telegram.org/bot" + env.TELEGRAM_BOT_TOKEN + "/" + method,
+    {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(payload)
+    }
+  );
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || !result.ok) {
+    console.error("Telegram API error", response.status, result.description || "unknown");
+    throw new Error("telegram_api_error");
   }
-  return payload.result;
-};
+  return result.result;
+}
+
+function leadText(data) {
+  const lines = [
+    "<b>Новая заявка с auditprolab.ru</b>",
+    "",
+    "<b>Имя:</b> " + escapeHtml(data.name),
+    "<b>Компания:</b> " + escapeHtml(data.company),
+    "<b>Должность:</b> " + escapeHtml(data.position),
+    "<b>Контакт:</b> " + escapeHtml(data.contact || data.phone || data.telegram),
+    "<b>Сфера:</b> " + escapeHtml(data.industry || "—"),
+    "<b>Сайт:</b> " + escapeHtml(data.site || "—"),
+    "<b>Размер отдела:</b> " + escapeHtml(data.teamSize || "—"),
+    "<b>Формат:</b> " + escapeHtml(data.selectedFormat || "Обсуждение ситуации"),
+    "",
+    "<b>Ситуация:</b>",
+    escapeHtml(data.situation || "—"),
+    "",
+    "<b>Страница:</b> " + escapeHtml(data.page || "—"),
+    "<b>UTM:</b> " + escapeHtml(data.utm || "—")
+  ];
+  return lines.join("\n");
+}
 
 export default {
   async fetch(request, env) {
-    const origin = request.headers.get("Origin") || "";
-    const allowedOrigins = new Set([env.ALLOWED_ORIGIN, "https://www.auditprolab.ru"]);
-
-    if (!allowedOrigins.has(origin)) {
-      return json({ ok: false, error: "origin_not_allowed" }, 403, env.ALLOWED_ORIGIN);
-    }
+    const url = new URL(request.url);
+    const requestOrigin = request.headers.get("Origin") || "";
+    const allowedOrigin = env.ALLOWED_ORIGIN || "https://auditprolab.ru";
+    const origin = requestOrigin === allowedOrigin || requestOrigin === "https://www.auditprolab.ru"
+      ? requestOrigin
+      : allowedOrigin;
 
     if (request.method === "OPTIONS") {
       return new Response(null, {
@@ -47,116 +79,95 @@ export default {
           "access-control-allow-origin": origin,
           "access-control-allow-methods": "POST, OPTIONS",
           "access-control-allow-headers": "content-type",
-          "access-control-max-age": "86400",
-          vary: "Origin",
-        },
+          "vary": "Origin"
+        }
       });
+    }
+
+    if (request.method === "GET" && url.pathname === "/status") {
+      try {
+        const me = await telegram(env, "getMe", {});
+        const hook = await telegram(env, "getWebhookInfo", {});
+        return json({
+          ok: true,
+          service: "auditprolab-telegram-leads",
+          bot: me.username,
+          webhook: hook.url || "",
+          chatConfigured: Boolean(env.TELEGRAM_CHAT_ID)
+        }, 200, origin);
+      } catch {
+        return json({ ok: false, error: "telegram_not_configured" }, 503, origin);
+      }
+    }
+
+    if (request.method === "GET" && url.pathname === "/setup") {
+      try {
+        const webhookUrl = url.origin + "/";
+        await telegram(env, "setWebhook", {
+          url: webhookUrl,
+          allowed_updates: ["message"]
+        });
+        return json({ ok: true, webhook: webhookUrl }, 200, origin);
+      } catch {
+        return json({ ok: false, error: "webhook_setup_failed" }, 502, origin);
+      }
+    }
+
+    if (request.method === "GET") {
+      return json({ ok: true, service: "auditprolab-telegram-leads" }, 200, origin);
     }
 
     if (request.method !== "POST") {
       return json({ ok: false, error: "method_not_allowed" }, 405, origin);
     }
-    if (!env.BITRIX_WEBHOOK) {
-      return json({ ok: false, error: "server_not_configured" }, 503, origin);
-    }
 
-    let body;
+    let data;
     try {
-      body = await request.json();
+      data = await request.json();
     } catch {
       return json({ ok: false, error: "invalid_json" }, 400, origin);
     }
 
-    if (clean(body.website, 100)) {
+    if (data && data.update_id && data.message && data.message.chat) {
+      const chatId = String(data.message.chat.id);
+      try {
+        await telegram(env, "sendMessage", {
+          chat_id: chatId,
+          text: "Ваш Telegram CHAT_ID: <code>" + escapeHtml(chatId) + "</code>",
+          parse_mode: "HTML"
+        });
+      } catch {}
       return json({ ok: true }, 200, origin);
     }
 
-    const lead = {
-      name: clean(body.name, 120),
-      company: clean(body.company, 160),
-      position: clean(body.position, 120),
-      contact: clean(body.contact, 120),
-      phone: clean(body.phone, 40),
-      telegram: clean(body.telegram, 100),
-      industry: clean(body.industry, 200),
-      site: clean(body.site, 300),
-      teamSize: clean(body.teamSize, 80),
-      situation: clean(body.situation, 1500),
-      selectedFormat: clean(body.selectedFormat, 200),
-      page: clean(body.page, 300),
-      utm: clean(body.utm, 500),
-    };
+    if (clean(data.website, 200)) {
+      return json({ ok: true }, 200, origin);
+    }
 
-    const contactValue = lead.contact || lead.phone || lead.telegram;
-    if (!lead.name || !lead.company || !lead.position || !contactValue || body.consent !== true) {
+    const required = [
+      clean(data.name, 160),
+      clean(data.company, 200),
+      clean(data.position, 200),
+      clean(data.contact || data.phone || data.telegram, 200)
+    ];
+    if (!data.consent || required.some((value) => !value)) {
       return json({ ok: false, error: "required_fields_missing" }, 422, origin);
     }
 
-    const phone = lead.phone || (/^[+\d()\s-]{7,}$/.test(contactValue) ? contactValue : "");
-    const telegram = lead.telegram || (!phone ? contactValue : "");
+    if (!env.TELEGRAM_CHAT_ID) {
+      return json({ ok: false, error: "telegram_chat_not_configured" }, 503, origin);
+    }
 
     try {
-      let duplicateIds = {};
-      if (phone) {
-        duplicateIds = await callBitrix(env.BITRIX_WEBHOOK, "crm.duplicate.findbycomm", {
-          entity_type: "CONTACT",
-          type: "PHONE",
-          values: [phone],
-        });
-      }
-
-      let contactId = duplicateIds?.CONTACT?.[0];
-      if (!contactId) {
-        const contactFields = {
-          NAME: lead.name,
-          POST: lead.position,
-          COMMENTS: [
-            `Компания: ${lead.company}`,
-            lead.industry ? `Сфера бизнеса: ${lead.industry}` : "",
-            telegram ? `Telegram: ${telegram}` : "",
-            lead.site ? `Сайт компании: ${lead.site}` : "",
-            lead.teamSize ? `Размер команды: ${lead.teamSize}` : "",
-            lead.selectedFormat ? `Выбранный формат: ${lead.selectedFormat}` : "",
-            "Источник: форма auditprolab.ru",
-          ].filter(Boolean).join("\n"),
-          SOURCE_ID: "WEB",
-          SOURCE_DESCRIPTION: "Обсуждение ситуации с сайта auditprolab.ru",
-        };
-        if (phone) contactFields.PHONE = [{ VALUE: phone, VALUE_TYPE: "WORK" }];
-        contactId = await callBitrix(env.BITRIX_WEBHOOK, "crm.contact.add", {
-          fields: contactFields,
-        });
-      }
-
-      const dealId = await callBitrix(env.BITRIX_WEBHOOK, "crm.deal.add", {
-        fields: {
-          TITLE: `Обсуждение ситуации — ${lead.name}, ${lead.company}`,
-          STAGE_ID: env.DEAL_STAGE_ID || "NEW",
-          CONTACT_ID: contactId,
-          SOURCE_ID: "WEB",
-          SOURCE_DESCRIPTION: "Форма «Обсудить ситуацию» на auditprolab.ru",
-          COMMENTS: [
-            `Имя: ${lead.name}`,
-            `Компания: ${lead.company}`,
-            `Должность: ${lead.position}`,
-            lead.industry ? `Сфера бизнеса: ${lead.industry}` : "",
-            phone ? `Телефон: ${phone}` : "",
-            telegram ? `Telegram: ${telegram}` : "",
-            lead.site ? `Сайт компании: ${lead.site}` : "",
-            lead.teamSize ? `Размер команды: ${lead.teamSize}` : "",
-            lead.selectedFormat ? `Выбранный формат: ${lead.selectedFormat}` : "",
-            lead.situation ? `Ситуация: ${lead.situation}` : "",
-            `Страница: ${lead.page || "https://auditprolab.ru/"}`,
-            lead.utm ? `UTM: ${lead.utm}` : "",
-          ].filter(Boolean).join("\n"),
-        },
-        params: { REGISTER_SONET_EVENT: "Y" },
+      await telegram(env, "sendMessage", {
+        chat_id: env.TELEGRAM_CHAT_ID,
+        text: leadText(data),
+        parse_mode: "HTML",
+        disable_web_page_preview: true
       });
-
-      return json({ ok: true, dealId }, 201, origin);
-    } catch (error) {
-      console.error("Bitrix submission failed", error);
-      return json({ ok: false, error: "crm_unavailable" }, 502, origin);
+      return json({ ok: true }, 200, origin);
+    } catch {
+      return json({ ok: false, error: "telegram_unavailable" }, 502, origin);
     }
-  },
+  }
 };
