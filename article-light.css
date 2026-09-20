@@ -1,0 +1,156 @@
+:root {
+  --bg: #f5f2f7;
+  --panel: #ffffff;
+  --text: #211a25;
+  --muted: #6f6576;
+  --line: #2b1b3518;
+  color-scheme: light;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.article-hero {
+  background:
+    radial-gradient(circle at 82% 18%, #b98aff30, transparent 34%),
+    linear-gradient(180deg, #fbf9fc 0%, #f1ebf6 100%);
+  border-bottom: 1px solid var(--line);
+}
+
+.breadcrumbs {
+  color: #756b7b;
+}
+
+.breadcrumbs a,
+.eyebrow {
+  color: #7042b8;
+}
+
+.article-hero h1 {
+  color: #1d1721;
+}
+
+.article-hero .wrap > h1 + p {
+  max-width: 760px;
+  color: #655c69;
+  font-size: 18px;
+}
+
+.article {
+  background: #ffffff;
+}
+
+.article h2 {
+  color: #211a25;
+}
+
+.article h3 {
+  color: #6840a5;
+}
+
+.article p,
+.article li {
+  color: #4e4653;
+}
+
+.article strong {
+  color: #211a25;
+}
+
+.article p a,
+.article li a {
+  color: #6940ad;
+  text-decoration-color: #6940ad66;
+  text-underline-offset: 3px;
+}
+
+.article table {
+  overflow: hidden;
+  border-color: var(--line);
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.article th,
+.article td {
+  border-color: var(--line);
+  color: #4e4653;
+}
+
+.article th {
+  background: #f1e9fa;
+  color: #4f2c80;
+}
+
+.article-cta {
+  border-color: #8050bd35;
+  background: linear-gradient(145deg, #f1e6ff, #fbf8fd);
+  box-shadow: 0 18px 50px #3b174b0d;
+}
+
+.materials {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 85% 5%, #bd91ff25, transparent 26%),
+    #f5f2f7;
+}
+
+.materials h1 {
+  color: #211a25;
+}
+
+.materials > .wrap > p {
+  color: #675e6c;
+}
+
+.material-card {
+  border-color: #653d8f20;
+  background: #ffffff;
+  box-shadow: 0 16px 42px #3518430c;
+}
+
+.material-card h2,
+.material-card strong {
+  color: #211a25;
+}
+
+.material-card p {
+  color: #655c69;
+}
+
+.material-card small {
+  color: #7042b8;
+}
+
+footer {
+  border-color: var(--line);
+  background: #f5f2f7;
+}
+
+footer .brand,
+footer nav a {
+  color: #514758;
+}
+
+.article-byline img {
+  border-color: #6d467338;
+  box-shadow: 0 7px 20px #41214d18;
+}
+
+.article-byline__label {
+  color: #765c83;
+}
+
+.article-byline__name {
+  color: #211a25;
+}
+
+.article-byline__name:hover {
+  color: #7042b8;
+}
+
+.article-byline__meta {
+  color: #756b7b;
+}
