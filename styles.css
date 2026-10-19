@@ -59,6 +59,25 @@ main { overflow: hidden; }
 .screen:nth-of-type(6), .screen:nth-of-type(7), .screen:nth-of-type(8), .screen:nth-of-type(9), .screen:nth-of-type(10) { background: #eaded5; }
 .screen--contact { background: var(--plum-deep); }
 
+/* Slide 6 uses a deeper overlap, but finishes revealing before its eyebrow
+   copy begins. A transparent tonal veil connects the two architectural sets. */
+#deliverables {
+  margin-top: clamp(-118px, -7vw, -64px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, rgba(0,0,0,.14) 1.2%, rgba(0,0,0,.48) 3%, rgba(0,0,0,.82) 5.2%, #000 7.2%, #000 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, rgba(0,0,0,.14) 1.2%, rgba(0,0,0,.48) 3%, rgba(0,0,0,.82) 5.2%, #000 7.2%, #000 100%);
+}
+
+#deliverables::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 0 0 auto;
+  height: 14%;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(58,35,31,.30), rgba(104,72,61,.13) 48%, transparent 100%);
+  mix-blend-mode: multiply;
+}
+
 #cta::after,
 #contact::before {
   content: "";
