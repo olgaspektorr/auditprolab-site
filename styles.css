@@ -133,8 +133,8 @@ main { overflow: hidden; }
 .hotspot:focus-visible { outline: 3px solid #fff; outline-offset: 3px; box-shadow: 0 0 0 5px var(--plum); }
 .hotspot--hero-cta { left: 4.2%; top: 70.4%; width: 16.4%; height: 7.2%; }
 .hotspot--hero-more { left: 22.2%; top: 70.4%; width: 20.5%; height: 7.2%; }
-.hotspot--cta-main { left: 5.2%; top: 69%; width: 23.3%; height: 9.8%; }
-.hotspot--cta-example { left: 29.6%; top: 69%; width: 24.8%; height: 9.8%; }
+.hotspot--cta-main { left: 4.4%; top: 67.4%; width: 49.7%; height: 11.2%; }
+.hotspot--cta-example { left: 4.4%; top: 80.7%; width: 49.7%; height: 10.6%; }
 .hotspot--formats-cta { left: 63.8%; top: 89.5%; width: 31.4%; height: 5.5%; }
 .hero-blog-link {
   position: absolute; z-index: 4; left: 36.55%; top: 2.8%; width: 6.1%; height: 4.8%;
@@ -198,7 +198,9 @@ main { overflow: hidden; }
     mask-image: linear-gradient(to bottom, transparent 0, rgba(0,0,0,.18) 2.5%, rgba(0,0,0,.64) 6%, #000 10.5%, #000 100%);
   }
   .hotspot { display: none; }
-  .hotspot--formats-cta { display: block; }
+  .hotspot--formats-cta,
+  .hotspot--cta-main,
+  .hotspot--cta-example { display: block; }
   .hero-blog-link { font-size: clamp(7px, 1.02vw, 10px); }
   .screen--contact { padding-bottom: 2rem; }
   /* Show only the left editorial half of the raster; the usable HTML form follows below. */
