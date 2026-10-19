@@ -11,7 +11,14 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; background: var(--plum-deep); }
 body { margin: 0; font-family: Manrope, Arial, sans-serif; background: #efe5dc; color: #171518; }
-main { overflow: hidden; }
+main {
+  overflow: hidden;
+  width: 100%;
+  max-width: 1909px;
+  margin-inline: auto;
+  background: #efe5dc;
+  box-shadow: 0 0 72px rgba(45, 24, 27, .12);
+}
 
 .screen {
   position: relative;
@@ -27,30 +34,41 @@ main { overflow: hidden; }
 .screen + .screen {
   /* The next scene overlaps the previous one and fades in inside the image
      itself, so there is no separate transition strip. */
-  margin-top: clamp(-86px, -5.4vw, -44px);
+  margin-top: clamp(-112px, -6.2vw, -58px);
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent 0,
-    rgba(0, 0, 0, .1) 1.4%,
-    rgba(0, 0, 0, .44) 4.2%,
-    rgba(0, 0, 0, .8) 7.2%,
-    #000 10.4%,
+    rgba(0, 0, 0, .08) 1.2%,
+    rgba(0, 0, 0, .34) 3.8%,
+    rgba(0, 0, 0, .68) 6.8%,
+    rgba(0, 0, 0, .9) 9.2%,
+    #000 11.2%,
     #000 100%
   );
   mask-image: linear-gradient(
     to bottom,
     transparent 0,
-    rgba(0, 0, 0, .1) 1.4%,
-    rgba(0, 0, 0, .44) 4.2%,
-    rgba(0, 0, 0, .8) 7.2%,
-    #000 10.4%,
+    rgba(0, 0, 0, .08) 1.2%,
+    rgba(0, 0, 0, .34) 3.8%,
+    rgba(0, 0, 0, .68) 6.8%,
+    rgba(0, 0, 0, .9) 9.2%,
+    #000 11.2%,
     #000 100%
   );
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
+  box-shadow: 0 -34px 62px rgba(246, 231, 219, .2);
 }
 .screen.is-visible { opacity: 1; transform: none; }
-.screen img { position: relative; z-index: 1; display: block; width: 100%; height: auto; object-fit: contain; }
+.screen img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 88%;
+  height: auto;
+  margin-inline: auto;
+  object-fit: contain;
+}
 .screen--hero { background: #f7f2ec; }
 .screen:nth-of-type(2) { background: #c8a995; }
 .screen:nth-of-type(3) { background: #765848; }
@@ -131,13 +149,13 @@ main { overflow: hidden; }
 
 .hotspot { position: absolute; z-index: 3; display: block; border-radius: .35rem; }
 .hotspot:focus-visible { outline: 3px solid #fff; outline-offset: 3px; box-shadow: 0 0 0 5px var(--plum); }
-.hotspot--hero-cta { left: 4.2%; top: 70.4%; width: 16.4%; height: 7.2%; }
-.hotspot--hero-more { left: 22.2%; top: 70.4%; width: 20.5%; height: 7.2%; }
-.hotspot--cta-main { left: 4.4%; top: 67.4%; width: 49.7%; height: 11.2%; }
-.hotspot--cta-example { left: 4.4%; top: 80.7%; width: 49.7%; height: 10.6%; }
-.hotspot--formats-cta { left: 63.8%; top: 89.5%; width: 31.4%; height: 5.5%; }
+.hotspot--hero-cta { left: 9.7%; top: 70.4%; width: 14.4%; height: 7.2%; }
+.hotspot--hero-more { left: 25.5%; top: 70.4%; width: 18%; height: 7.2%; }
+.hotspot--cta-main { left: 9.9%; top: 67.4%; width: 43.7%; height: 11.2%; }
+.hotspot--cta-example { left: 9.9%; top: 80.7%; width: 43.7%; height: 10.6%; }
+.hotspot--formats-cta { left: 62.1%; top: 89.5%; width: 27.6%; height: 5.5%; }
 .hero-blog-link {
-  position: absolute; z-index: 4; left: 36.55%; top: 2.8%; width: 6.1%; height: 4.8%;
+  position: absolute; z-index: 4; left: 38.2%; top: 2.8%; width: 5.4%; height: 4.8%;
   display: flex; align-items: center; justify-content: center;
   color: #211d1e; text-decoration: none; font: 500 clamp(7px, 1.02vw, 17px)/1 Manrope, sans-serif;
   background: radial-gradient(ellipse at center, rgba(249,246,242,.99) 0 70%, rgba(249,246,242,0) 100%);
@@ -147,9 +165,9 @@ main { overflow: hidden; }
 .lead-form {
   position: absolute;
   z-index: 3;
-  left: 68%;
+  left: 65.8%;
   top: 7.8%;
-  width: 27.7%;
+  width: 24.4%;
   height: 68.8%;
   display: grid;
   grid-template-rows: auto repeat(3, 1fr) 1.7fr auto 1.35fr auto;
@@ -191,7 +209,9 @@ main { overflow: hidden; }
 .sr-only { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0,0,0,0) !important; white-space: nowrap !important; border: 0 !important; }
 
 @media (max-width: 900px) {
+  main { max-width: none; box-shadow: none; }
   .screen { min-height: 0; opacity: 1; transform: none; }
+  .screen img { width: 100%; margin-inline: 0; }
   .screen + .screen {
     margin-top: -44px;
     -webkit-mask-image: linear-gradient(to bottom, transparent 0, rgba(0,0,0,.18) 2.5%, rgba(0,0,0,.64) 6%, #000 10.5%, #000 100%);
@@ -201,6 +221,12 @@ main { overflow: hidden; }
   .hotspot--formats-cta,
   .hotspot--cta-main,
   .hotspot--cta-example { display: block; }
+  .hotspot--hero-cta { left: 4.2%; width: 16.4%; }
+  .hotspot--hero-more { left: 22.2%; width: 20.5%; }
+  .hotspot--cta-main { left: 4.4%; width: 49.7%; }
+  .hotspot--cta-example { left: 4.4%; width: 49.7%; }
+  .hotspot--formats-cta { left: 63.8%; width: 31.4%; }
+  .hero-blog-link { left: 36.55%; width: 6.1%; }
   .hero-blog-link { font-size: clamp(7px, 1.02vw, 10px); }
   .screen--contact { padding-bottom: 2rem; }
   /* Show only the left editorial half of the raster; the usable HTML form follows below. */
