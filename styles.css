@@ -78,6 +78,29 @@ main { overflow: hidden; }
   mix-blend-mode: multiply;
 }
 
+/* Keep the tariffs slide visually tall: its eyebrow and CTA sit close to the
+   raster edges, so this scene uses shorter overlaps and earlier mask reveal. */
+#formats {
+  margin-top: clamp(-48px, -3vw, -28px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, rgba(0,0,0,.34) .7%, rgba(0,0,0,.76) 1.7%, #000 2.8%, #000 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, rgba(0,0,0,.34) .7%, rgba(0,0,0,.76) 1.7%, #000 2.8%, #000 100%);
+}
+
+#formats::before,
+#formats::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  width: 100%;
+  height: 9%;
+  pointer-events: none;
+}
+
+#formats::before { top: 0; background: linear-gradient(to bottom, rgba(204,184,170,.16), transparent 100%); }
+#formats::after { bottom: 0; background: linear-gradient(to bottom, transparent, rgba(225,207,193,.14) 100%); }
+#metrics { margin-top: clamp(-50px, -3vw, -30px); }
+
 #cta::after,
 #contact::before {
   content: "";
@@ -112,6 +135,7 @@ main { overflow: hidden; }
 .hotspot--hero-more { left: 22.2%; top: 70.4%; width: 20.5%; height: 7.2%; }
 .hotspot--cta-main { left: 5.2%; top: 69%; width: 23.3%; height: 9.8%; }
 .hotspot--cta-example { left: 29.6%; top: 69%; width: 24.8%; height: 9.8%; }
+.hotspot--formats-cta { left: 63.8%; top: 89.5%; width: 31.4%; height: 5.5%; }
 .hero-blog-link {
   position: absolute; z-index: 4; left: 36.55%; top: 2.8%; width: 6.1%; height: 4.8%;
   display: flex; align-items: center; justify-content: center;
@@ -174,6 +198,7 @@ main { overflow: hidden; }
     mask-image: linear-gradient(to bottom, transparent 0, rgba(0,0,0,.18) 2.5%, rgba(0,0,0,.64) 6%, #000 10.5%, #000 100%);
   }
   .hotspot { display: none; }
+  .hotspot--formats-cta { display: block; }
   .hero-blog-link { font-size: clamp(7px, 1.02vw, 10px); }
   .screen--contact { padding-bottom: 2rem; }
   /* Show only the left editorial half of the raster; the usable HTML form follows below. */
